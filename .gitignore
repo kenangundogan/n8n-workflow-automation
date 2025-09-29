@@ -1,0 +1,63 @@
+# Environment dosyaları
+.env
+.env.*
+!.env.example
+!environment.env
+
+# Docker volumes ve data
+postgres_data/
+n8n_data/
+docker-data/
+
+# Yedek dosyaları
+*.sql
+*.backup
+*.dump
+backup/
+backups/
+
+# Log dosyaları
+*.log
+logs/
+log/
+
+# Temporary dosyalar
+tmp/
+temp/
+.tmp/
+
+# OS dosyaları
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# IDE ve Editor dosyaları
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.settings/
+.classpath
+
+# Node.js (eğer local development yapılırsa)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# SSL sertifikaları
+*.pem
+*.key
+*.crt
+*.cert
+
+# Docker override dosyaları
+docker-compose.override.yml
+docker-compose.local.yml
