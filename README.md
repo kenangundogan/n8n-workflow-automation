@@ -17,7 +17,7 @@ Bu proje, n8n workflow automation aracını Docker ile yerel olarak çalıştır
 
 ### 1. Projeyi İndirin
 ```bash
-git clone <repository-url>
+git clone https://github.com/kenangundogan/n8n-workflow-automation.git
 cd n8n
 ```
 
