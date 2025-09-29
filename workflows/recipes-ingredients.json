@@ -6,10 +6,10 @@
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
       "position": [
-        -928,
-        -112
+        -3680,
+        304
       ],
-      "id": "8c7aa581-f5c0-4c77-9bef-844897c4f316",
+      "id": "a0f59788-89d8-4b24-8573-885e97a99513",
       "name": "When clicking ‘Execute workflow’"
     },
     {
@@ -33,14 +33,15 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        -656,
-        -112
+        -3040,
+        304
       ],
-      "id": "a99499ff-2d07-4639-b41d-67dd568495ba",
+      "id": "cdbdbd7d-96ec-4772-9b95-58c448d272c1",
       "name": "Get row(s) in sheet",
+      "retryOnFail": false,
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "mWk8Jm4JhVnyOL99",
+          "id": "0kC7p2araMEV6rXt",
           "name": "Google Sheets account"
         }
       }
@@ -52,16 +53,16 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        32,
-        -112
+        -2256,
+        304
       ],
-      "id": "f6272139-d116-4698-a677-152a56cdac17",
+      "id": "699fdef4-8055-4d05-9ded-ccd3d5b78e2d",
       "name": "Loop Over Items"
     },
     {
       "parameters": {
         "promptType": "define",
-        "text": "=Ürün adı: {{ $json.name }}\n\nGörev: Yukarıdaki kurallara göre bu ürün için JSON üret.",
+        "text": "=Ürün adı: {{ $('If').item.json.Name }}\n\nGörev: Yukarıdaki kurallara göre bu ürün için JSON üret.",
         "hasOutputParser": true,
         "options": {
           "systemMessage": "Sen bir içerik üretim ajanısın. ÇIKTI FORMATIN KESİNLİKLE YALNIZCA GEÇERLİ JSON OLMALIDIR.\nMarkdown, kod bloğu, açıklama, ek metin YOK.\n\nGörev: Verilen ürün için Türkçe bir başlık, açıklama ve anahtar kelimeler üret.\n\nJSON ŞEMASI (zorunlu):\n{\n  \"title\": \"string, 50-60 karakter\",\n  \"description\": \"string, 140-150 karakter\",\n  \"keywords\": [\"string\", \"string\", \"string\", ...] // 5 ila 7 kelime\n}\n\nKurallar:\n- Sadece {\"title\": \"...\", \"description\": \"...\", \"keywords\": [...]} anahtarlarını döndür.\n- Başlık (title) YALNIZCA ürün adı + varsa bilimsel adı parantez içinde olmalıdır.\n  Başlıkta başka sıfat, açıklama, slogan, ek bilgi, noktalama veya tire (-) kullanılamaz.\n  ✅ Örnek doğru: \"Domates (Solanum lycopersicum)\"\n  ❌ Yanlış: \"Domates (Solanum lycopersicum) - Kırmızı ve Lezzetli Sebze\"\n- Açıklama tek satır olmalı, dolgu sözcük yok.\n- Keywords Türkçe, sebze ile doğrudan ilgili 5–7 kelime olmalı.\n- Uzunluk kurallarını katı uygula.\n- JSON dışına çıkma, yorum ekleme, fazladan alan ekleme.\n\nÇıktı örneği:\n{\n  \"title\":\"Domates (Solanum lycopersicum)\",\n  \"description\":\"Domates, kırmızı rengi ve etli dokusuyla öne çıkar; likopen, C ve K vitamini içerir. Salata ve soslarda doğal tat ve besleyici değer sunar.\",\n  \"keywords\":[\"domates\",\"sebze\",\"likopen\",\"salata\",\"sos\",\"kırmızı\",\"besleyici\"]\n}\n"
@@ -70,11 +71,12 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 2.2,
       "position": [
-        1472,
-        -608
+        -864,
+        304
       ],
-      "id": "7f3a8af8-57a5-4c60-bf5b-cdef75b4b2d2",
+      "id": "9225e3af-f5d2-4e60-9c3a-334a7e293504",
       "name": "AI Agent1",
+      "retryOnFail": true,
       "onError": "continueErrorOutput"
     },
     {
@@ -85,14 +87,14 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
       "typeVersion": 1,
       "position": [
-        1472,
-        -352
+        -864,
+        560
       ],
-      "id": "8bdf1b3f-5c44-41da-baeb-ddcb1b892385",
+      "id": "8e43f1a5-39dd-4246-b7a1-27fa4af4fb32",
       "name": "OpenRouter Chat Model1",
       "credentials": {
         "openRouterApi": {
-          "id": "0FxNCuzlJ7KMftHg",
+          "id": "KEE3sHbrgiOxgWTU",
           "name": "OpenRouter account"
         }
       }
@@ -104,10 +106,10 @@
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        1648,
-        -400
+        -720,
+        560
       ],
-      "id": "91dc1ad4-3ce6-4ddc-a8a6-d1547fc6990a",
+      "id": "dd5ef115-d3ab-470f-81db-304e342d1ceb",
       "name": "Structured Output Parser"
     },
     {
@@ -134,8 +136,10 @@
             "Description": "={{ $json.output.description }}",
             "Keywords": "={{ $json.output.keywords }}",
             "row_number": "={{ $('Get row(s) in sheet').item.json.row_number }}",
-            "UpdateDate": "={{ new Date().toISOString() }}",
-            "CreateDate": "={{ new Date().toISOString() }}",
+            "ProcessEndTime": "={{ new Date().toISOString() }}",
+            "ProcessStatus": "COMPLETED",
+            "ProcessLastUpdateTime": "={{ new Date().toISOString() }}",
+            "ProcessCurrentStage": "AI",
             "Status": "1"
           },
           "matchingColumns": [
@@ -143,8 +147,8 @@
           ],
           "schema": [
             {
-              "id": "Column 5",
-              "displayName": "Column 5",
+              "id": "Order",
+              "displayName": "Order",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -153,8 +157,8 @@
               "removed": true
             },
             {
-              "id": "name",
-              "displayName": "name",
+              "id": "Name",
+              "displayName": "Name",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -190,26 +194,6 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "UpdateDate",
-              "displayName": "UpdateDate",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
-              "id": "CreateDate",
-              "displayName": "CreateDate",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": false
-            },
-            {
               "id": "Status",
               "displayName": "Status",
               "required": false,
@@ -220,8 +204,58 @@
               "removed": false
             },
             {
-              "id": "Error",
-              "displayName": "Error",
+              "id": "ProcessStartTime",
+              "displayName": "ProcessStartTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ProcessLastUpdateTime",
+              "displayName": "ProcessLastUpdateTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProcessEndTime",
+              "displayName": "ProcessEndTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProcessCurrentStage",
+              "displayName": "ProcessCurrentStage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProcessStatus",
+              "displayName": "ProcessStatus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProcessErrorDetails",
+              "displayName": "ProcessErrorDetails",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -249,14 +283,14 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        1984,
-        96
+        -240,
+        288
       ],
-      "id": "dd213a4a-e69f-4a0f-9f23-e990a208645b",
+      "id": "f35855a2-79cb-4ea5-8a23-9422aac3fd6f",
       "name": "Update row in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "mWk8Jm4JhVnyOL99",
+          "id": "0kC7p2araMEV6rXt",
           "name": "Google Sheets account"
         }
       }
@@ -282,15 +316,19 @@
           "mappingMode": "defineBelow",
           "value": {
             "Status": "-1",
-            "row_number": "={{ $('Loop Over Items').item.json.row_number }}"
+            "row_number": "={{ $('Loop Over Items').item.json.row_number }}",
+            "ProcessLastUpdateTime": "={{ new Date().toISOString() }}",
+            "ProcessEndTime": "={{ new Date().toISOString() }}",
+            "ProcessCurrentStage": "AI",
+            "ProcessStatus": "ERROR"
           },
           "matchingColumns": [
             "row_number"
           ],
           "schema": [
             {
-              "id": "Column 5",
-              "displayName": "Column 5",
+              "id": "Order",
+              "displayName": "Order",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -299,8 +337,8 @@
               "removed": true
             },
             {
-              "id": "name",
-              "displayName": "name",
+              "id": "Name",
+              "displayName": "Name",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -339,26 +377,6 @@
               "removed": true
             },
             {
-              "id": "UpdateDate",
-              "displayName": "UpdateDate",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
-              "id": "CreateDate",
-              "displayName": "CreateDate",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true,
-              "removed": true
-            },
-            {
               "id": "Status",
               "displayName": "Status",
               "required": false,
@@ -368,8 +386,275 @@
               "canBeUsedToMatch": true
             },
             {
-              "id": "Error",
-              "displayName": "Error",
+              "id": "ProcessStartTime",
+              "displayName": "ProcessStartTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ProcessLastUpdateTime",
+              "displayName": "ProcessLastUpdateTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProcessEndTime",
+              "displayName": "ProcessEndTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProcessCurrentStage",
+              "displayName": "ProcessCurrentStage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProcessStatus",
+              "displayName": "ProcessStatus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProcessErrorDetails",
+              "displayName": "ProcessErrorDetails",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -224,
+        912
+      ],
+      "id": "93ca896a-6c1d-458e-a729-899bac99b542",
+      "name": "Update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "0kC7p2araMEV6rXt",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "b61fcdb2-ac30-43ce-ba81-1e8057b3ae2f",
+              "leftValue": "={{ $json._shouldContinue }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1408,
+        -16
+      ],
+      "id": "1d2644e4-2073-4678-8d68-962efde505b1",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Code node\nconst items = $input.all();\n\nreturn items.map(item => {\n  const name = item.json.Name?.toString() || '';\n  const status = item.json.Status?.toString() || '';\n  \n  // Name boş DEĞİL VE (Status boş VEYA -1)\n  const shouldContinue = name !== '' && (status === '' || status === '-1');\n  \n  return {\n    json: {\n      ...item.json,\n      _shouldContinue: shouldContinue\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1792,
+        320
+      ],
+      "id": "2a6a3320-e4ee-47cd-9c89-3097028205d9",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1gyQ9yWDir-WXZ-nDJhBFutzsHDuNIGbUUR6jhGreIB8",
+          "mode": "list",
+          "cachedResultName": "ingredients",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gyQ9yWDir-WXZ-nDJhBFutzsHDuNIGbUUR6jhGreIB8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sayfa1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1gyQ9yWDir-WXZ-nDJhBFutzsHDuNIGbUUR6jhGreIB8/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "ProcessCurrentStage": "FIELD",
+            "ProcessStatus": "COMPLETED",
+            "row_number": "={{ $json.row_number }}",
+            "ProcessLastUpdateTime": "={{ new Date().toISOString() }}",
+            "ProcessStartTime": "={{ new Date().toISOString() }}"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Order",
+              "displayName": "Order",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Keywords",
+              "displayName": "Keywords",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ProcessStartTime",
+              "displayName": "ProcessStartTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProcessLastUpdateTime",
+              "displayName": "ProcessLastUpdateTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "ProcessEndTime",
+              "displayName": "ProcessEndTime",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "ProcessCurrentStage",
+              "displayName": "ProcessCurrentStage",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ProcessStatus",
+              "displayName": "ProcessStatus",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ProcessErrorDetails",
+              "displayName": "ProcessErrorDetails",
               "required": false,
               "defaultMatch": false,
               "display": true,
@@ -397,61 +682,18 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
       "position": [
-        2032,
-        -416
+        -1184,
+        -224
       ],
-      "id": "38db3355-6352-487f-9580-a29b39b2c040",
-      "name": "Update row in sheet1",
+      "id": "b3fe65d2-2adf-42a4-a073-7cf87264cb4f",
+      "name": "Update row in sheet3",
+      "retryOnFail": false,
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "mWk8Jm4JhVnyOL99",
+          "id": "0kC7p2araMEV6rXt",
           "name": "Google Sheets account"
         }
       }
-    },
-    {
-      "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict",
-            "version": 2
-          },
-          "conditions": [
-            {
-              "id": "8efb9ac8-262c-4d0e-ade9-e440712c31c4",
-              "leftValue": "={{$json.Status.toString()}}",
-              "rightValue": null,
-              "operator": {
-                "type": "string",
-                "operation": "empty",
-                "singleValue": true
-              }
-            },
-            {
-              "id": "08345eb5-0b5f-4782-8aaf-c389fa662800",
-              "leftValue": "={{ $json.Status.toString() }}",
-              "rightValue": "-1",
-              "operator": {
-                "type": "string",
-                "operation": "equals",
-                "name": "filter.operator.equals"
-              }
-            }
-          ],
-          "combinator": "or"
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.if",
-      "typeVersion": 2.2,
-      "position": [
-        400,
-        -96
-      ],
-      "id": "9b28c3c4-abfe-442d-919c-0b187aac4f2f",
-      "name": "If"
     }
   ],
   "pinData": {},
@@ -483,7 +725,7 @@
         [],
         [
           {
-            "node": "If",
+            "node": "Code in JavaScript",
             "type": "main",
             "index": 0
           }
@@ -545,6 +787,11 @@
       "main": [
         [
           {
+            "node": "Update row in sheet3",
+            "type": "main",
+            "index": 0
+          },
+          {
             "node": "AI Agent1",
             "type": "main",
             "index": 0
@@ -558,17 +805,39 @@
           }
         ]
       ]
+    },
+    "Update row in sheet1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "1fc9eca3-d743-4d57-a29d-7f7a592de913",
+  "versionId": "33f06b98-ac9b-4966-9e53-8faa97587a49",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "6931d90da6daa7d08ed96f5aed84521982db2210ddb354eccaad2c95fe960b3a"
+    "instanceId": "e875f13da87f7c60f6ecac47383b5ae2d1cbc3f76491fc6bf3729ce5d7f8b068"
   },
-  "id": "8iyeUWRTkFUXYY6O",
+  "id": "j3WeD0aRJkzn2glV",
   "tags": []
 }
