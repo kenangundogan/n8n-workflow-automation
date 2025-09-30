@@ -46,7 +46,7 @@ Tarayıcınızda şu adrese gidin: http://localhost:5678
 
 **Giriş Bilgileri:**
 - Kullanıcı adı: `admin`
-- Şifre: `admin123`
+- Şifre: `password`
 
 ## Kullanım
 
