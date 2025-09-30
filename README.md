@@ -94,7 +94,7 @@ docker-compose exec -T postgres psql -U n8n -d n8n < backup.sql
 | Değişken | Açıklama | Varsayılan |
 |----------|----------|------------|
 | `POSTGRES_USER` | PostgreSQL kullanıcı adı | n8n |
-| `POSTGRES_PASSWORD` | PostgreSQL şifresi | N8n_P0stgr3s_S3cur3_K3y_2025! |
+| `POSTGRES_PASSWORD` | PostgreSQL şifresi | N8n_P0stgr3s_S3cur3_K3y_2025_X7Z |
 | `POSTGRES_DB` | PostgreSQL veritabanı adı | n8n |
 | `GENERIC_TIMEZONE` | Zaman dilimi | Europe/Istanbul |
 
