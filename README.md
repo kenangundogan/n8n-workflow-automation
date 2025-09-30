@@ -44,9 +44,9 @@ docker-compose up -d
 ### 4. n8n'e Erişin
 Tarayıcınızda şu adrese gidin: http://localhost:5678
 
-**Giriş Bilgileri:**
-- Kullanıcı adı: `admin`
-- Şifre: `password`
+**İlk Kurulum:**
+- İlk erişimde hesap oluşturma ekranı açılacak
+- Email ve güçlü şifre ile hesabınızı oluşturun
 
 ## Kullanım
 
@@ -94,10 +94,8 @@ docker-compose exec -T postgres psql -U n8n -d n8n < backup.sql
 | Değişken | Açıklama | Varsayılan |
 |----------|----------|------------|
 | `POSTGRES_USER` | PostgreSQL kullanıcı adı | n8n |
-| `POSTGRES_PASSWORD` | PostgreSQL şifresi | n8n_password_123 |
+| `POSTGRES_PASSWORD` | PostgreSQL şifresi | N8n_P0stgr3s_S3cur3_K3y_2025! |
 | `POSTGRES_DB` | PostgreSQL veritabanı adı | n8n |
-| `N8N_BASIC_AUTH_USER` | n8n kullanıcı adı | admin |
-| `N8N_BASIC_AUTH_PASSWORD` | n8n şifresi | admin123 |
 | `GENERIC_TIMEZONE` | Zaman dilimi | Europe/Istanbul |
 
 ### Portlar

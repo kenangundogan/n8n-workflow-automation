@@ -4,7 +4,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: n8n
-      POSTGRES_PASSWORD: n8n_password_123
+      POSTGRES_PASSWORD: N8n_P0stgr3s_S3cur3_K3y_2025_X7Z
       POSTGRES_DB: n8n
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -25,12 +25,8 @@ services:
       DB_POSTGRESDB_PORT: 5432
       DB_POSTGRESDB_DATABASE: n8n
       DB_POSTGRESDB_USER: n8n
-      DB_POSTGRESDB_PASSWORD: n8n_password_123
+      DB_POSTGRESDB_PASSWORD: N8n_P0stgr3s_S3cur3_K3y_2025_X7Z
       
-      # Kimlik Doğrulama
-      N8N_BASIC_AUTH_ACTIVE: true
-      N8N_BASIC_AUTH_USER: admin
-      N8N_BASIC_AUTH_PASSWORD: admin123
       
       # Genel Ayarlar
       GENERIC_TIMEZONE: Europe/Istanbul
