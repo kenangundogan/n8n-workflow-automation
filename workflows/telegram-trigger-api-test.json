@@ -1,0 +1,640 @@
+{
+  "name": "telegram-trigger-api-test",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "callback_query"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        64,
+        -128
+      ],
+      "id": "f95d910d-b380-41bc-9710-e5e4981ade74",
+      "name": "Telegram Trigger",
+      "webhookId": "2ed1b25c-2fea-4049-90b6-aa46721714d3",
+      "credentials": {
+        "telegramApi": {
+          "id": "kcO6AN803bCfH3Ry",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "82f41635-a0ce-4583-a9bf-fb3854c0e890",
+              "leftValue": "={{ $json.callback_query }}",
+              "rightValue": "",
+              "operator": {
+                "type": "object",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        384,
+        -128
+      ],
+      "id": "7f3787a1-eed7-4154-825e-2a68612c1072",
+      "name": "Is Callback Query?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "callback-condition",
+              "leftValue": "={{ $json.callback_query.data }}",
+              "rightValue": "issue_update",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        -256
+      ],
+      "id": "e5af92ec-7caf-4832-873b-b567b871b967",
+      "name": "Which Issue Type?"
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.callback_query.message.chat.id}}",
+        "text": "=**Güncelleme Sorunu**\n\nLütfen ilgili içerik ID'sini şu formatta giriniz:\n`#issue=12345`\n\nÖrnek: #issue=67890",
+        "replyMarkup": "forceReply",
+        "forceReply": {
+          "force_reply": true,
+          "selective": false
+        },
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "reply_to_message_id": "={{$json.callback_query.message.message_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        976,
+        -352
+      ],
+      "id": "7efeb081-f37a-48d7-bab4-6ef1214d5053",
+      "name": "Update ForceReply",
+      "webhookId": "b6535ba5-fc39-4f6f-b6cc-570e69499969",
+      "credentials": {
+        "telegramApi": {
+          "id": "kcO6AN803bCfH3Ry",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.callback_query.message.chat.id}}",
+        "text": "=**Erişim Sorunu**\n\n{{ $json.callback_query.from.first_name }}, \nLütfen ilgili içerik ID'sini aşağıdaki formatta girerek mesajı reply ediniz.\n`#issue=12345`\n\nÖrnek: #issue=67890",
+        "replyMarkup": "forceReply",
+        "forceReply": {
+          "force_reply": true,
+          "selective": false
+        },
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "reply_to_message_id": "={{$json.callback_query.message.message_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        976,
+        -160
+      ],
+      "id": "f75d9307-62cf-4422-9734-12fd5c826108",
+      "name": "Access ForceReply",
+      "webhookId": "4665f7b1-f97f-43a9-aafa-c04d151487e0",
+      "credentials": {
+        "telegramApi": {
+          "id": "kcO6AN803bCfH3Ry",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.message?.chat?.id}}",
+        "text": "=**Merhaba!** {{ $json.message.from.first_name }}\n\nDestek sistemine hoş geldiniz. Aşağıdaki seçeneklerden birini seçebilirsiniz:",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "Güncelleme sorunu",
+                    "additionalFields": {
+                      "callback_data": "issue_update"
+                    }
+                  },
+                  {
+                    "text": " Erişim sorunu",
+                    "additionalFields": {
+                      "callback_data": "issue_access"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        688,
+        48
+      ],
+      "id": "858f3311-9372-4208-8b41-5e133d7e105f",
+      "name": "Main Menu",
+      "webhookId": "2cbd7b2a-d5b2-448b-b1ab-501b4f447717",
+      "credentials": {
+        "telegramApi": {
+          "id": "kcO6AN803bCfH3Ry",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "reply-check",
+              "leftValue": "={{ $json.message?.reply_to_message?.text }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        688,
+        256
+      ],
+      "id": "b25b4418-e733-4875-8b55-748a9adfe6af",
+      "name": "Is Reply Message?"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "format-check",
+              "leftValue": "={{ $json.message.text }}",
+              "rightValue": "#issue=\\d+",
+              "operator": {
+                "type": "string",
+                "operation": "regex"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        256
+      ],
+      "id": "8daf5172-22ce-4669-a7c7-d70b2093bc6a",
+      "name": "Valid Format?"
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.message.chat.id}}",
+        "text": "=**İşlem Başlatıldı!**\n\n{{ $json.message.from.first_name }} Lütfen bekleyiniz, kontrol ediliyor...",
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "reply_to_message_id": "={{$json.message.message_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        160
+      ],
+      "id": "90872b73-0d31-41a5-9256-28a72a4d9405",
+      "name": "Processing Message",
+      "webhookId": "063c3b82-5293-4f50-b06a-6f8c372d3a23",
+      "credentials": {
+        "telegramApi": {
+          "id": "kcO6AN803bCfH3Ry",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{$json.message.chat.id}}",
+        "text": "=**Geçersiz Format!**\n\n{{ $json.message.chat.first_name }},\n\nLütfen ID'yi doğru formatta giriniz:\n`#issue=12345`\n\nÖrnek: #issue=67890",
+        "replyMarkup": "inlineKeyboard",
+        "inlineKeyboard": {
+          "rows": [
+            {
+              "row": {
+                "buttons": [
+                  {
+                    "text": "🔄 Tekrar dene",
+                    "additionalFields": {
+                      "callback_data": "retry"
+                    }
+                  },
+                  {
+                    "text": "🏠 Ana menü",
+                    "additionalFields": {
+                      "callback_data": "main_menu"
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "additionalFields": {
+          "parse_mode": "Markdown",
+          "reply_to_message_id": "={{$json.message.message_id}}"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1280,
+        352
+      ],
+      "id": "7e95c8a0-ecf9-46ed-b25a-55c0a14504f2",
+      "name": "Error Message",
+      "webhookId": "b3cc9a40-3979-4e7a-8e0f-8971c7c3611e",
+      "credentials": {
+        "telegramApi": {
+          "id": "kcO6AN803bCfH3Ry",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Extract ID from message text and prepare data for HTTP request\nconst item = $input.first();\n\n// Debug: Log the entire item structure\nconsole.log('Full item:', JSON.stringify(item, null, 2));\n\n// Try different paths to find the message text\nlet messageText;\nif (item.json.message && item.json.message.text) {\n  messageText = item.json.message.text;\n} else if (item.json.result && item.json.result.reply_to_message && item.json.result.reply_to_message.text) {\n  messageText = item.json.result.reply_to_message.text;\n} else if (item.json.text) {\n  messageText = item.json.text;\n} else {\n  // Fallback: search for any text field\n  messageText = item.json.message?.text || item.json.result?.message?.text || 'NOT_FOUND';\n}\n\nconsole.log('Message text found:', messageText);\n\n// Extract the ID from #issue=12345 format\nconst issueId = messageText.replace('#issue=', '');\nconsole.log('Extracted ID:', issueId);\n\n// Create API URL\nconst apiUrl = `https://apiurl/${issueId}`;\nconsole.log('API URL:', apiUrl);\n\n// Return the data\nreturn [{\n  json: {\n    ...item.json,\n    issueId: issueId,\n    apiUrl: apiUrl,\n    originalMessageText: messageText\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1504,
+        160
+      ],
+      "id": "40b142ab-f5e0-4313-90f9-8cab1ac15ade",
+      "name": "Extract ID"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.apiUrl }}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 10000
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1728,
+        160
+      ],
+      "id": "737f8657-8215-4cf5-9e17-0b553a23f355",
+      "name": "API Check",
+      "alwaysOutputData": false,
+      "executeOnce": false,
+      "retryOnFail": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "={{$('Processing Message').item.json.result.reply_to_message.chat.id}}",
+        "text": "=**Erişim Başarılı!**\n\nSelam {{ $('Processing Message').item.json.result.chat.first_name }},\n\nID: `{{$('Extract ID').item.json.issueId}}`\nTitle: `{{ $json.extras.meta.title.base }}`\nDescription: `{{ $json.extras.meta.description.base }}`\nCreated Date: `{{ $json.extras.date.items.created.value }}`\nUpdated Date: `{{ $json.extras.date.items.isoModified.value }}`\nGenerate Date: `{{ $json.generator.datetime }}`\n\nİçerik erişilebilir durumda. Herhangi bir sorun bulunmamaktadır.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2400,
+        -48
+      ],
+      "id": "b69c6710-611a-43f1-9e61-911aac80c468",
+      "name": "Success Response",
+      "webhookId": "f9cc4630-be88-432a-b263-b2f3f2189ee8",
+      "credentials": {
+        "telegramApi": {
+          "id": "kcO6AN803bCfH3Ry",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "183b1a1a-6da9-4691-b6a7-a11a33266a94",
+              "leftValue": "={{ $json.body.content }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        2112,
+        64
+      ],
+      "id": "0027541a-89b3-4ca5-b5be-388960e749b3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "chatId": "={{$('Processing Message').item.json.result.reply_to_message.chat.id}}",
+        "text": "=**Erişim Sorunu Tespit Edildi!**\n\nSelam {{ $('Processing Message').item.json.result.chat.first_name }},\n\nID: `={{$('Extract ID').item.json.issueId}}`\n\nİçerik erişilemiyor veya mevcut değil. Lütfen ID'yi kontrol edin.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2400,
+        160
+      ],
+      "id": "a9082eda-ac81-431a-819e-2f96da13435a",
+      "name": "Error Response",
+      "webhookId": "f9cc4630-be88-432a-b263-b2f3f2189ee8",
+      "credentials": {
+        "telegramApi": {
+          "id": "kcO6AN803bCfH3Ry",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{$('Processing Message').item.json.result.reply_to_message.chat.id}}",
+        "text": "=**Erişim Sorunu Tespit Edildi!**\n\nSelam {{ $('Processing Message').item.json.result.chat.first_name }},\n\nID: `={{$('Extract ID').item.json.issueId}}`\n\nİçerik erişilemiyor veya mevcut değil. Lütfen ID'yi kontrol edin.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2112,
+        480
+      ],
+      "id": "396fbc63-a801-4ee4-83f0-b08ef1e4b6fc",
+      "name": "Fail Response",
+      "webhookId": "9ca81e61-0b89-453f-bd48-0545d991a7a0",
+      "credentials": {
+        "telegramApi": {
+          "id": "kcO6AN803bCfH3Ry",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Is Callback Query?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Callback Query?": {
+      "main": [
+        [
+          {
+            "node": "Which Issue Type?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Is Reply Message?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Which Issue Type?": {
+      "main": [
+        [
+          {
+            "node": "Update ForceReply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Access ForceReply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Reply Message?": {
+      "main": [
+        [
+          {
+            "node": "Valid Format?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Main Menu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Valid Format?": {
+      "main": [
+        [
+          {
+            "node": "Processing Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Processing Message": {
+      "main": [
+        [
+          {
+            "node": "Extract ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract ID": {
+      "main": [
+        [
+          {
+            "node": "API Check",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "API Check": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Fail Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Success Response",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Error Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "39556988-3f20-49e2-8cdd-d12ec8799c9d",
+  "meta": {
+    "instanceId": "4eda5e93eb00905590d60489a0ea5a5926394c5a3aec5e1831068f825bd70afd"
+  },
+  "id": "XAvYN60CVVWDlGBg",
+  "tags": []
+}
